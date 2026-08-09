@@ -1,0 +1,82 @@
+<UserControl x:Class="AxiomOps.UI.Views.DeployGameView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,14" LastChildFill="False">
+            <StackPanel DockPanel.Dock="Left">
+                <TextBlock FontSize="24" FontWeight="SemiBold">
+                    <Run Text="Deploy de juego —" /> <Run Text="{Binding EnvironmentName, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock Foreground="#757575" Margin="0,4,0,0"
+                           Text="Elegí el zip del game service: la app detiene los servicios de Veyron, lo sube y los vuelve a levantar." />
+            </StackPanel>
+            <Button DockPanel.Dock="Right" Content="← Volver al dashboard" Padding="12,6" VerticalAlignment="Top"
+                    Command="{Binding BackCommand}" />
+        </DockPanel>
+
+        <ProgressBar Grid.Row="1" Height="4" IsIndeterminate="True" BorderThickness="0"
+                     Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+
+        <!-- Setup -->
+        <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,10,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Zip del game service" />
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="📦 Elegir zip…" Padding="12,6" FontWeight="SemiBold"
+                                Command="{Binding PickZipCommand}" />
+                        <TextBlock VerticalAlignment="Center" Margin="12,0,0,0" FontWeight="SemiBold"
+                                   Text="{Binding ZipDescription, TargetNullValue='Ningún archivo seleccionado'}" />
+                    </StackPanel>
+                    <TextBlock Foreground="#9E9E9E" FontSize="11" Margin="0,8,0,0" TextWrapping="Wrap"
+                               Text="Equivale a la pestaña «Install a game → Service files» del portal." />
+                    <TextBlock Foreground="#9E9E9E" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"
+                               Text="Se detienen los servicios de Veyron y se espera a que queden efectivamente detenidos antes de subir el zip." />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" VerticalAlignment="Center" MinWidth="200">
+                    <Button Content="🚀 Deployar" Padding="0,12" FontWeight="SemiBold" FontSize="14"
+                            Background="#2E7D32" Foreground="White"
+                            Command="{Binding DeployCommand}" />
+                    <TextBlock Foreground="#9E9E9E" FontSize="11" Margin="0,8,0,0" TextWrapping="Wrap"
+                               HorizontalAlignment="Center"
+                               Text="Solo se vuelven a levantar los servicios de Veyron que estaban corriendo." />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Log -->
+        <Border Grid.Row="3" Style="{StaticResource Card}" Margin="0,14,0,0" Padding="0">
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Top" Text="Detalle del deploy" FontWeight="SemiBold" Margin="14,12,14,6" />
+                <ListBox ItemsSource="{Binding Log}" BorderThickness="0" FontFamily="Consolas" FontSize="12"
+                         ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+            </DockPanel>
+        </Border>
+
+        <!-- Status -->
+        <StackPanel Grid.Row="4" Margin="2,12,0,0">
+            <TextBlock Foreground="#2E7D32" TextWrapping="Wrap" FontWeight="SemiBold"
+                       Text="{Binding StatusMessage}"
+                       Visibility="{Binding StatusMessage, Converter={StaticResource NullOrEmptyToVisibility}}" />
+            <TextBlock Style="{StaticResource ErrorText}" Margin="0,6,0,0"
+                       Text="{Binding ErrorMessage}"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource NullOrEmptyToVisibility}}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

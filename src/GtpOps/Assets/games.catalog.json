@@ -1,0 +1,233 @@
+[
+  {
+    "gameId": 2166,
+    "displayName": "Amazing Pharaoh",
+    "provider": "NekoGames",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 2225,
+    "displayName": "American Gold Fever",
+    "provider": "NekoGames",
+    "clientIdMobile": 40301,
+    "clientIdDesktop": 50301
+  },
+  {
+    "gameId": 4495,
+    "displayName": "Bet365 Tiger Jackpot Fortunes",
+    "provider": "NekoGames",
+    "clientIdMobile": 40308,
+    "clientIdDesktop": 50308
+  },
+  {
+    "gameId": 820,
+    "displayName": "Bingote",
+    "provider": "NekoGames",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 2504,
+    "displayName": "Break Da Bank",
+    "provider": "NekoGames",
+    "clientIdMobile": 40301,
+    "clientIdDesktop": 50301
+  },
+  {
+    "gameId": 4278,
+    "displayName": "CapiCash Jackpot Fortunes",
+    "provider": "NekoGames",
+    "clientIdMobile": 40307,
+    "clientIdDesktop": 50307
+  },
+  {
+    "gameId": 2979,
+    "displayName": "Carnaval",
+    "provider": "NekoGames",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 2711,
+    "displayName": "Catrina",
+    "provider": "NekoGames",
+    "clientIdMobile": 40302,
+    "clientIdDesktop": 50302
+  },
+  {
+    "gameId": 3174,
+    "displayName": "Crazy Monkey",
+    "provider": "NekoGames",
+    "clientIdMobile": 40303,
+    "clientIdDesktop": 50303
+  },
+  {
+    "gameId": 3991,
+    "displayName": "Crazy Monkey Ultra Link&Win",
+    "provider": "NekoGames",
+    "clientIdMobile": 40303,
+    "clientIdDesktop": 50303
+  },
+  {
+    "gameId": 3853,
+    "displayName": "Don Hidalgo Ultra Link&Win",
+    "provider": "NekoGames",
+    "clientIdMobile": 40302,
+    "clientIdDesktop": 50302
+  },
+  {
+    "gameId": 698,
+    "displayName": "Fu88",
+    "provider": "NekoGames",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 4280,
+    "displayName": "Golazo Mystery Link&Win",
+    "provider": "NekoGames",
+    "clientIdMobile": 40302,
+    "clientIdDesktop": 50302
+  },
+  {
+    "gameId": 819,
+    "displayName": "Golden Quest",
+    "provider": "NekoGames",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 3366,
+    "displayName": "Golden Tiger",
+    "provider": "NekoGames",
+    "clientIdMobile": 40304,
+    "clientIdDesktop": 50304
+  },
+  {
+    "gameId": 4276,
+    "displayName": "Grand Lucky Tiger Power Combo",
+    "provider": "NekoGames",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 3573,
+    "displayName": "Hot Fireballs Link&Win",
+    "provider": "NekoGames",
+    "clientIdMobile": 40301,
+    "clientIdDesktop": 50301
+  },
+  {
+    "gameId": 1688,
+    "displayName": "Immortal Romance",
+    "provider": "NekoGames",
+    "clientIdMobile": 40301,
+    "clientIdDesktop": 50301
+  },
+  {
+    "gameId": 3574,
+    "displayName": "Linko 5",
+    "provider": "LinkoStudios",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 4728,
+    "displayName": "Linko 5 CoinStacker",
+    "provider": "LinkoStudios",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 4348,
+    "displayName": "Linko 5 Hot",
+    "provider": "LinkoStudios",
+    "clientIdMobile": 40302,
+    "clientIdDesktop": 50302
+  },
+  {
+    "gameId": 4560,
+    "displayName": "Linko 5 Multichase",
+    "provider": "LinkoStudios",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 4347,
+    "displayName": "Linko 5 Pachinko",
+    "provider": "LinkoStudios",
+    "clientIdMobile": 40301,
+    "clientIdDesktop": 50301
+  },
+  {
+    "gameId": 4727,
+    "displayName": "Linko 5 Prime",
+    "provider": "LinkoStudios",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 4627,
+    "displayName": "Lucky Coelho Jackpot Fortunes",
+    "provider": "NekoGames",
+    "clientIdMobile": 40311,
+    "clientIdDesktop": 50311
+  },
+  {
+    "gameId": 2710,
+    "displayName": "Madre De Oro",
+    "provider": "NekoGames",
+    "clientIdMobile": 40301,
+    "clientIdDesktop": 50301
+  },
+  {
+    "gameId": 481,
+    "displayName": "Pachinko",
+    "provider": "NekoGames",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 4227,
+    "displayName": "Pachinko Fortunes",
+    "provider": "NekoGames",
+    "clientIdMobile": 40306,
+    "clientIdDesktop": 50306
+  },
+  {
+    "gameId": 3935,
+    "displayName": "Pescador Bass Legends",
+    "provider": "NekoGames",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 4689,
+    "displayName": "Rainbow Fortunes Prize Collector",
+    "provider": "NekoGames",
+    "clientIdMobile": 40301,
+    "clientIdDesktop": 50301
+  },
+  {
+    "gameId": 3856,
+    "displayName": "Sportingbet Crazy Monkey Banana Kingdom",
+    "provider": "NekoGames",
+    "clientIdMobile": 40305,
+    "clientIdDesktop": 50305
+  },
+  {
+    "gameId": 3604,
+    "displayName": "Super Showball Mystery Link&Win",
+    "provider": "NekoGames",
+    "clientIdMobile": 40300,
+    "clientIdDesktop": 50300
+  },
+  {
+    "gameId": 1798,
+    "displayName": "Thunderstruck",
+    "provider": "NekoGames",
+    "clientIdMobile": 40302,
+    "clientIdDesktop": 50302
+  }
+]

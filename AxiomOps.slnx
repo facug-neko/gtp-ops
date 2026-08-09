@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/AxiomOps.Console/AxiomOps.Console.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/AxiomOps.Compass/AxiomOps.Compass.csproj" />
+    <Project Path="src/AxiomOps.Services/AxiomOps.Services.csproj" />
+    <Project Path="src/AxiomOps.UI.Common/AxiomOps.UI.Common.csproj" />
+    <Project Path="src/AxiomOps.UI/AxiomOps.UI.csproj" />
+    <Project Path="src/GtpOps/GtpOps.csproj" />
+  </Folder>
+</Solution>

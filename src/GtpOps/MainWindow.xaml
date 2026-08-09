@@ -1,0 +1,25 @@
+<Window x:Class="GtpOps.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:GtpOps.ViewModels"
+        xmlns:views="clr-namespace:GtpOps.Views"
+        Title="GtpOps — GameTechnology Portal" Height="820" Width="1300"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:ProjectsViewModel}">
+            <views:ProjectsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DeliverablesViewModel}">
+            <views:DeliverablesView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PreCertViewModel}">
+            <views:PreCertView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:HelpfilesViewModel}">
+            <views:HelpfilesView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <ContentControl Content="{Binding CurrentViewModel}" />
+</Window>

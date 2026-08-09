@@ -1,0 +1,145 @@
+<UserControl x:Class="AxiomOps.UI.Views.LaunchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,16" LastChildFill="False">
+            <StackPanel DockPanel.Dock="Left">
+                <TextBlock FontSize="24" FontWeight="SemiBold">
+                    <Run Text="Launch —" /> <Run Text="{Binding EnvironmentName, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock Foreground="#757575" Margin="0,4,0,0"
+                           Text="Elegí usuario, juego y mercado; el juego se abre en el navegador (normal o incógnito)." />
+            </StackPanel>
+            <Button DockPanel.Dock="Right" Content="← Volver al dashboard" Padding="12,6" VerticalAlignment="Top"
+                    Command="{Binding BackCommand}" />
+        </DockPanel>
+
+        <ProgressBar Grid.Row="1" Height="4" IsIndeterminate="True" BorderThickness="0"
+                     Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+
+        <!-- Selección -->
+        <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,10,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Usuario -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Usuario (filtrar y elegir)" />
+                    <TextBox Padding="6,5" Margin="0,0,0,6"
+                             Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Escribí parte del loginName para filtrar" />
+                    <ComboBox ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}" Padding="6,5">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding LoginName, Mode=OneWay}" />
+                                    <Run Foreground="#757575">
+                                        <Run.Text>
+                                            <MultiBinding StringFormat="  ({0}, {1})" Mode="OneWay">
+                                                <Binding Path="UserId" Mode="OneWay" />
+                                                <Binding Path="CurrencyIsoCode" Mode="OneWay" />
+                                            </MultiBinding>
+                                        </Run.Text>
+                                    </Run>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Password" Margin="0,10,0,4" />
+                    <TextBox Padding="6,5" FontFamily="Consolas"
+                             Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+
+                <!-- Juego -->
+                <StackPanel Grid.Column="2">
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Juego" />
+                    <ComboBox ItemsSource="{Binding Games}" SelectedItem="{Binding SelectedGame}" Padding="6,5">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding DisplayName, Mode=OneWay}" />
+                                    <Run Foreground="#757575">
+                                        <Run.Text>
+                                            <MultiBinding StringFormat="  [{0}/{1}]" Mode="OneWay">
+                                                <Binding Path="ModuleId" Mode="OneWay" />
+                                                <Binding Path="ClientId" Mode="OneWay" />
+                                            </MultiBinding>
+                                        </Run.Text>
+                                    </Run>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Versión del juego" Margin="0,10,0,4" />
+                    <ComboBox ItemsSource="{Binding GameVersions}" SelectedItem="{Binding SelectedGameVersion}" Padding="6,5" />
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Host" Margin="0,10,0,4" />
+                    <ComboBox ItemsSource="{Binding Hosts}" SelectedItem="{Binding Host}" Padding="6,5" />
+                </StackPanel>
+
+                <!-- Mercado -->
+                <StackPanel Grid.Column="4">
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Mercado (lobby)" />
+                    <ComboBox ItemsSource="{Binding Lobbies}" SelectedItem="{Binding SelectedLobby}" Padding="6,5">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding FriendlyName, Mode=OneWay}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Idioma" Margin="0,10,0,4" />
+                    <TextBox Padding="6,5" Text="{Binding LanguageCode, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Versión de Titan" Margin="0,10,0,4" />
+                    <ComboBox ItemsSource="{Binding FrameworkVersions}" SelectedItem="{Binding SelectedFrameworkVersion}" Padding="6,5" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Acciones -->
+        <Border Grid.Row="3" Style="{StaticResource Card}" Margin="0,14,0,0">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="▶ Launch" Padding="18,9" FontWeight="SemiBold"
+                            Background="#2E7D32" Foreground="White"
+                            Command="{Binding LaunchNormalCommand}" />
+                    <Button Content="🕶 Launch incógnito" Padding="18,9" FontWeight="SemiBold" Margin="10,0,0,0"
+                            Background="#37474F" Foreground="White"
+                            Command="{Binding LaunchIncognitoCommand}" />
+                    <Button Content="Generar URL" Padding="14,9" Margin="10,0,0,0"
+                            Command="{Binding GenerateUrlCommand}" />
+                    <Button Content="Copiar URL" Padding="14,9" Margin="10,0,0,0"
+                            Command="{Binding CopyUrlCommand}" />
+                </StackPanel>
+
+                <TextBox Margin="0,12,0,0" Padding="6,5" IsReadOnly="True" FontFamily="Consolas" FontSize="11"
+                         TextWrapping="Wrap" MaxHeight="80" VerticalScrollBarVisibility="Auto"
+                         Text="{Binding GeneratedUrl, Mode=OneWay}"
+                         Visibility="{Binding GeneratedUrl, Converter={StaticResource NullOrEmptyToVisibility}}" />
+            </StackPanel>
+        </Border>
+
+        <!-- Estado -->
+        <StackPanel Grid.Row="4" Margin="2,12,0,0">
+            <TextBlock Foreground="#2E7D32" TextWrapping="Wrap"
+                       Text="{Binding StatusMessage}"
+                       Visibility="{Binding StatusMessage, Converter={StaticResource NullOrEmptyToVisibility}}" />
+            <TextBlock Style="{StaticResource ErrorText}" Margin="0,6,0,0"
+                       Text="{Binding ErrorMessage}"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource NullOrEmptyToVisibility}}" />
+        </StackPanel>
+    </Grid>
+</UserControl>
