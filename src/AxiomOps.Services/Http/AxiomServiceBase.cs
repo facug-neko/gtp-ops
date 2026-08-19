@@ -69,7 +69,15 @@ public abstract class AxiomServiceBase
         }
         catch (JsonException ex)
         {
-            throw new AxiomApiException(response.StatusCode, uri, $"Could not deserialize response from {method} {uri}.", raw, ex);
+            // JsonException.Path pinpoints exactly which node/field broke (e.g.
+            // $.dataObject[0].children[3].dateModified) — without it, a shape
+            // mismatch deep in a large tree is nearly impossible to diagnose from
+            // the raw body alone.
+            var location = ex.Path is not null
+                ? $" At {ex.Path} (line {ex.LineNumber}, position {ex.BytePositionInLine})."
+                : string.Empty;
+
+            throw new AxiomApiException(response.StatusCode, uri, $"Could not deserialize response from {method} {uri}.{location}", raw, ex);
         }
     }
 
