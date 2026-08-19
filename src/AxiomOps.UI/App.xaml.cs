@@ -37,6 +37,8 @@ public partial class App : Application
         builder.Services.AddTransient<GameEventDataViewModel>();
         builder.Services.AddTransient<CreateUserViewModel>();
         builder.Services.AddTransient<DeployGameViewModel>();
+        builder.Services.AddSingleton<TestDataCatalogService>();
+        builder.Services.AddTransient<PlayRepositoryViewModel>();
         builder.Services.AddSingleton<MainWindowViewModel>();
         builder.Services.AddSingleton<MainWindow>();
 

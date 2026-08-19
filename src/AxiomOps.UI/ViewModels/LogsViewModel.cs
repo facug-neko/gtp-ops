@@ -175,7 +175,7 @@ public partial class LogsViewModel : ObservableObject
         catch (Exception ex) when (ex is AxiomApiException or HttpRequestException or TaskCanceledException)
         {
             StatusMessage = null;
-            ErrorMessage = $"No se pudieron listar los logs: {Shorten(ex.Message)}";
+            ErrorMessage = $"No se pudieron listar los logs: {Shorten(ex.Message)}{ResponseBodyHint(ex)}";
         }
         finally
         {
@@ -258,7 +258,7 @@ public partial class LogsViewModel : ObservableObject
         }
         catch (Exception ex) when (ex is AxiomApiException or HttpRequestException or TaskCanceledException)
         {
-            ErrorMessage = $"Error leyendo {node.Name}: {Shorten(ex.Message)}";
+            ErrorMessage = $"Error leyendo {node.Name}: {Shorten(ex.Message)}{ResponseBodyHint(ex)}";
         }
         finally
         {
@@ -347,7 +347,7 @@ public partial class LogsViewModel : ObservableObject
         }
     }
 
-    private static string Shorten(string? message)
+    private static string Shorten(string? message, int maxLength = 250)
     {
         if (string.IsNullOrWhiteSpace(message))
         {
@@ -355,6 +355,17 @@ public partial class LogsViewModel : ObservableObject
         }
 
         var clean = message.Replace("\r", " ").Replace("\n", " ").Trim();
-        return clean.Length <= 250 ? clean : clean[..250] + "…";
+        return clean.Length <= maxLength ? clean : clean[..maxLength] + "…";
     }
+
+    /// <summary>
+    /// Appends a snippet of the raw server response when available. A "no se pudo
+    /// deserializar" error only says WHERE the call failed — the response body is
+    /// what actually explains WHY (a different JSON shape on that appliance, an
+    /// HTML error/login page instead of JSON, an empty folder, etc).
+    /// </summary>
+    private static string ResponseBodyHint(Exception ex) =>
+        ex is AxiomApiException { ResponseBody.Length: > 0 } apiEx
+            ? $"\n\nRespuesta del servidor:\n{Shorten(apiEx.ResponseBody, 600)}"
+            : string.Empty;
 }

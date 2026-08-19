@@ -86,6 +86,15 @@ public partial class TestDataViewModel : ObservableObject
     [ObservableProperty]
     private bool _isDecodedFromBase64;
 
+    /// <summary>Prize/Description shown in the QA play repository — stored as a trailing
+    /// XML comment (see <see cref="TestDataSummary"/>), edited separately from the raw
+    /// XML so the editor above stays clean.</summary>
+    [ObservableProperty]
+    private string? _prize;
+
+    [ObservableProperty]
+    private string? _description;
+
     /// <summary>Filename for the "new testdata" flow.</summary>
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(CreateFileCommand))]
@@ -254,6 +263,13 @@ public partial class TestDataViewModel : ObservableObject
                 IsDecodedFromBase64 = false;
             }
 
+            // The Prize/Description live in a trailing comment, outside <Test> — pull
+            // them into their own fields and keep the XML editor showing just the payload.
+            TestDataSummary.TryParse(EditorText, out var summary);
+            Prize = summary.Prize;
+            Description = summary.Description;
+            EditorText = TestDataSummary.Strip(EditorText);
+
             StatusMessage = $"{file.Name} ({EditorText.Length:N0} caracteres).";
         }
         catch (Exception ex) when (ex is AxiomApiException or HttpRequestException or TaskCanceledException)
@@ -290,9 +306,10 @@ public partial class TestDataViewModel : ObservableObject
 
         try
         {
+            var finalXml = new TestDataSummary(Prize, Description).ApplyTo(EditorText);
             var contentToSend = IsDecodedFromBase64
-                ? Base64Text.Encode(EditorText, _decodedHadBom)
-                : EditorText;
+                ? Base64Text.Encode(finalXml, _decodedHadBom)
+                : finalXml;
 
             var result = await _manage.SetFileContentAsync(new FileContent
             {
@@ -350,6 +367,8 @@ public partial class TestDataViewModel : ObservableObject
                 _openedFile = null;
                 EditorText = string.Empty;
                 IsDecodedFromBase64 = false;
+                Prize = null;
+                Description = null;
             }
             else
             {
@@ -449,7 +468,8 @@ public partial class TestDataViewModel : ObservableObject
 
         try
         {
-            var bytes = Base64Text.ToUtf8Bytes(EditorText, withBom: true);
+            var finalXml = new TestDataSummary(Prize, Description).ApplyTo(EditorText);
+            var bytes = Base64Text.ToUtf8Bytes(finalXml, withBom: true);
             using var stream = new MemoryStream(bytes);
 
             var result = await _upload.UploadTestDataAsync(stream, name);

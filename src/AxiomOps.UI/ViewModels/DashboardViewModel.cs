@@ -742,4 +742,7 @@ public partial class DashboardViewModel : ObservableObject
 
     [RelayCommand]
     private void OpenDeployGame() => _messenger.Send(new OpenDeployGameMessage());
+
+    [RelayCommand]
+    private void OpenPlayRepositoryTool() => _messenger.Send(new OpenPlayRepositoryToolMessage());
 }

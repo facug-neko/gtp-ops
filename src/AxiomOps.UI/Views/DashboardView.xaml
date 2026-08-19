@@ -23,6 +23,9 @@
                 <Button Content="🚀 Deploy" Padding="12,6" Margin="0,0,8,0"
                         FontWeight="SemiBold"
                         Command="{Binding OpenDeployGameCommand}" />
+                <Button Content="🗂 Repositorio de jugadas" Padding="12,6" Margin="0,0,8,0"
+                        FontWeight="SemiBold"
+                        Command="{Binding OpenPlayRepositoryToolCommand}" />
                 <Button Content="▶ Launch" Padding="12,6" Margin="0,0,8,0"
                         FontWeight="SemiBold"
                         Command="{Binding OpenLaunchToolCommand}" />

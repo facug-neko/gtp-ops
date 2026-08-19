@@ -35,6 +35,7 @@ public partial class MainWindowViewModel : ObservableObject
         messenger.Register<OpenGameEventDataMessage>(this, (_, m) => ShowGameEventData(m));
         messenger.Register<OpenCreateUserMessage>(this, (_, _) => ShowCreateUser());
         messenger.Register<OpenDeployGameMessage>(this, (_, _) => ShowDeployGame());
+        messenger.Register<OpenPlayRepositoryToolMessage>(this, (_, _) => ShowPlayRepositoryTool());
 
         // Fire the initial environment load; errors surface inside the selector.
         _ = selector.LoadEnvironmentsCommand.ExecuteAsync(null);
@@ -112,4 +113,11 @@ public partial class MainWindowViewModel : ObservableObject
 
     private void ShowDeployGame() =>
         CurrentViewModel = _services.GetRequiredService<DeployGameViewModel>();
+
+    private void ShowPlayRepositoryTool()
+    {
+        var tool = _services.GetRequiredService<PlayRepositoryViewModel>();
+        CurrentViewModel = tool;
+        _ = tool.InitializeCommand.ExecuteAsync(null);
+    }
 }

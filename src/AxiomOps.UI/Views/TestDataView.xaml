@@ -100,6 +100,32 @@
                                     Command="{Binding DeleteFileCommand}" />
                         </StackPanel>
 
+                        <!-- Prize/Description for the QA play repository — stored as a
+                             trailing comment outside <Test>, not part of the game payload. -->
+                        <Border Background="#F5F5F5" CornerRadius="4" Padding="8" Margin="0,10,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Resumen para el repositorio de jugadas" FontWeight="SemiBold" FontSize="12" Margin="0,0,0,6" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="8" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="6" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Prize" VerticalAlignment="Center" Width="70" />
+                                    <TextBox Grid.Row="0" Grid.Column="2" Padding="6,4"
+                                             Text="{Binding Prize, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Description" VerticalAlignment="Center" Width="70" />
+                                    <TextBox Grid.Row="2" Grid.Column="2" Padding="6,4"
+                                             Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
                         <!-- New testdata -->
                         <Border Background="#F5F5F5" CornerRadius="4" Padding="8" Margin="0,10,0,0">
                             <DockPanel LastChildFill="False">

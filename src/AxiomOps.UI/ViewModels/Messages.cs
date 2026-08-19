@@ -36,5 +36,8 @@ public sealed record OpenCreateUserMessage;
 /// <summary>Sent by the dashboard to open the manual game-deploy module.</summary>
 public sealed record OpenDeployGameMessage;
 
+/// <summary>Sent by the dashboard to open the play-repository generator.</summary>
+public sealed record OpenPlayRepositoryToolMessage;
+
 /// <summary>Sent by a tool view to go back to the dashboard.</summary>
 public sealed record BackToDashboardMessage;
