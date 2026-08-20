@@ -80,6 +80,14 @@
                     <CheckBox DockPanel.Dock="Top" Content="Solo Veyron" IsChecked="{Binding VeyronOnly}"
                               Margin="12,0,12,6"
                               ToolTip="Muestra solo los archivos con 'Veyron' en el nombre — donde suelen caer los errores" />
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="12,0,12,6">
+                        <Button Content="🗑 Borrar seleccionado" Padding="8,4"
+                                ToolTip="Elimina el archivo .log seleccionado"
+                                Command="{Binding DeleteSelectedCommand}" />
+                        <Button Content="🗑 Borrar todos" Padding="8,4" Margin="6,0,0,0"
+                                ToolTip="Elimina todos los .log listados (respeta el filtro 'Solo Veyron')"
+                                Command="{Binding DeleteAllCommand}" />
+                    </StackPanel>
                     <TextBlock DockPanel.Dock="Top" Text="{Binding StatusMessage}" Foreground="#9E9E9E"
                                FontSize="11" Margin="12,0,12,6" TextWrapping="Wrap"
                                Visibility="{Binding StatusMessage, Converter={StaticResource NullOrEmptyToVisibility}}" />

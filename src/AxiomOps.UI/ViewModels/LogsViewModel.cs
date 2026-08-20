@@ -54,6 +54,7 @@ public partial class LogsViewModel : ObservableObject
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(OpenFileCommand))]
     [NotifyCanExecuteChangedFor(nameof(RefreshContentCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteSelectedCommand))]
     private FileFolderNode? _selectedFile;
 
     [ObservableProperty]
@@ -76,6 +77,8 @@ public partial class LogsViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(ReloadFolderCommand))]
     [NotifyCanExecuteChangedFor(nameof(OpenFileCommand))]
     [NotifyCanExecuteChangedFor(nameof(RefreshContentCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteSelectedCommand))]
+    [NotifyCanExecuteChangedFor(nameof(DeleteAllCommand))]
     private bool _isBusy;
 
     [ObservableProperty]
@@ -310,6 +313,143 @@ public partial class LogsViewModel : ObservableObject
         {
             Files.Add(file);
         }
+
+        DeleteAllCommand.NotifyCanExecuteChanged();
+    }
+
+    private bool CanDeleteSelected() => !IsBusy && SelectedFile is not null;
+
+    [RelayCommand(CanExecute = nameof(CanDeleteSelected))]
+    private async Task DeleteSelectedAsync()
+    {
+        var file = SelectedFile!;
+
+        var confirmation = MessageBox.Show(
+            $"¿Eliminar el log {file.Name}?\n\nEsta acción no se puede deshacer.",
+            "Confirmar eliminación",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+        if (confirmation != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        ErrorMessage = null;
+
+        try
+        {
+            var result = await _manage.DeleteFileAsync(file.Path!);
+            if (result.Success)
+            {
+                StatusMessage = $"Eliminado: {file.Name}.";
+                ClearOpenedContent();
+            }
+            else
+            {
+                ErrorMessage = $"No se pudo eliminar {file.Name}: {Shorten(result.CustomMessage)}";
+            }
+        }
+        catch (Exception ex) when (ex is AxiomApiException or HttpRequestException or TaskCanceledException)
+        {
+            ErrorMessage = $"Error eliminando {file.Name}: {Shorten(ex.Message)}{ResponseBodyHint(ex)}";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+
+        await ReloadFolderAsync();
+    }
+
+    private bool CanDeleteAll() => !IsBusy && Files.Count > 0;
+
+    /// <summary>Deletes every log currently listed — respects the "Solo Veyron" filter, so
+    /// checking it first scopes the bulk delete to just those files.</summary>
+    [RelayCommand(CanExecute = nameof(CanDeleteAll))]
+    private async Task DeleteAllAsync()
+    {
+        var targets = Files.ToList();
+        var scope = VeyronOnly ? "de Veyron" : "listados";
+
+        var confirmation = MessageBox.Show(
+            $"¿Eliminar los {targets.Count} log(s) {scope}?\n\n" +
+            string.Join("\n", targets.Take(12).Select(t => $"  • {t.Name}")) +
+            (targets.Count > 12 ? $"\n  … y {targets.Count - 12} más." : string.Empty) +
+            "\n\nEsta acción no se puede deshacer.",
+            "Confirmar eliminación masiva",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+        if (confirmation != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        ErrorMessage = null;
+        StatusMessage = $"Eliminando {targets.Count} log(s)…";
+
+        var failures = new List<string>();
+        var gate = new SemaphoreSlim(4);
+
+        try
+        {
+            await Task.WhenAll(targets.Select(async node =>
+            {
+                await gate.WaitAsync();
+                try
+                {
+                    var result = await _manage.DeleteFileAsync(node.Path!);
+                    if (!result.Success)
+                    {
+                        lock (failures)
+                        {
+                            failures.Add($"{node.Name}: {Shorten(result.CustomMessage)}");
+                        }
+                    }
+                }
+                catch (Exception ex) when (ex is AxiomApiException or HttpRequestException or TaskCanceledException)
+                {
+                    lock (failures)
+                    {
+                        failures.Add($"{node.Name}: {Shorten(ex.Message)}");
+                    }
+                }
+                finally
+                {
+                    gate.Release();
+                }
+            }));
+
+            if (failures.Count > 0)
+            {
+                ErrorMessage = $"{failures.Count} log(s) no se pudieron eliminar:\n" +
+                               string.Join("\n", failures.Take(5)) +
+                               (failures.Count > 5 ? $"\n… y {failures.Count - 5} más." : string.Empty);
+            }
+
+            ClearOpenedContent();
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+
+        await ReloadFolderAsync();
+    }
+
+    private void ClearOpenedContent()
+    {
+        SelectedFile = null;
+        _allLines = [];
+        Lines.Clear();
+        FileSummary = null;
+        TotalLines = 0;
+        ShownLines = 0;
+        ErrorCount = 0;
+        WarningCount = 0;
     }
 
     [RelayCommand]
