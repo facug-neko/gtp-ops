@@ -7,6 +7,14 @@ public interface ICompassCliService
 
     /// <summary>Runs `compass portal get-environments` and returns the parsed list.</summary>
     Task<List<CompassEnvironment>> GetEnvironmentsAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Runs `compass portal reboot-appliance --environment-id &lt;id&gt;` — restarts every
+    /// service on the environment (POST /api/v1/environments/{id}/reboot on the Portal).
+    /// Requires a Portal (GGL) login, same as GetEnvironmentsAsync. Throws
+    /// <see cref="CompassException"/> on failure; a normal return means compass exited 0.
+    /// </summary>
+    Task RebootEnvironmentAsync(int environmentId, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -25,4 +33,9 @@ public sealed class CompassCliService : ICompassCliService
 
     public Task<List<CompassEnvironment>> GetEnvironmentsAsync(CancellationToken cancellationToken = default) =>
         _runner.RunJsonAsync<List<CompassEnvironment>>(["portal", "get-environments"], cancellationToken);
+
+    public Task RebootEnvironmentAsync(int environmentId, CancellationToken cancellationToken = default) =>
+        _runner.RunTextAsync(
+            ["portal", "reboot-appliance", "--environment-id", environmentId.ToString(System.Globalization.CultureInfo.InvariantCulture)],
+            cancellationToken);
 }

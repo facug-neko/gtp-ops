@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Http;
+using System.Windows;
 using AxiomOps.Compass;
 using AxiomOps.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -35,6 +36,7 @@ public partial class EnvironmentSelectorViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RebootCommand))]
     private CompassEnvironment? _selectedEnvironment;
 
     [ObservableProperty]
@@ -44,6 +46,7 @@ public partial class EnvironmentSelectorViewModel : ObservableObject
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ConnectCommand))]
     [NotifyCanExecuteChangedFor(nameof(LoadEnvironmentsCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RebootCommand))]
     private bool _isBusy;
 
     [ObservableProperty]
@@ -153,6 +156,53 @@ public partial class EnvironmentSelectorViewModel : ObservableObject
             _context.Clear();
             StatusMessage = null;
             ErrorMessage = $"No se pudo conectar a {environment.InternalName}: {ex.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private bool CanReboot() => !IsBusy && SelectedEnvironment is not null;
+
+    /// <summary>
+    /// `compass portal reboot-appliance --environment-id X` — restarts every service on
+    /// the environment (same action as GTP's "Reboot" button). Destructive: interrupts
+    /// active sessions and game rounds, so it always confirms first.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanReboot))]
+    private async Task RebootAsync()
+    {
+        var environment = SelectedEnvironment!;
+
+        var confirmation = MessageBox.Show(
+            $"¿Reiniciar el ambiente {environment.InternalName} ({environment.Name})?\n\n" +
+            "Esto reinicia TODOS los servicios del ambiente — las sesiones y jugadas activas se van a interrumpir.\n\n" +
+            "Esta acción no se puede deshacer.",
+            "Confirmar reboot",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+        if (confirmation != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        IsBusy = true;
+        ErrorMessage = null;
+        StatusMessage = $"Reiniciando {environment.InternalName}…";
+
+        try
+        {
+            await _compass.RebootEnvironmentAsync(environment.Id);
+            StatusMessage = $"Reboot solicitado para {environment.InternalName}. Puede tardar unos minutos en volver a estar disponible.";
+        }
+        catch (CompassException ex)
+        {
+            StatusMessage = null;
+            ErrorMessage = ex.LooksLikeAuthProblem
+                ? $"{ex.Message}\n\nProbablemente falte autenticarse contra Portal: corré `compass login` en una terminal y reintentá."
+                : ex.Message;
         }
         finally
         {
