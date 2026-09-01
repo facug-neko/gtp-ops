@@ -1,3 +1,6 @@
+using System.Text.Json.Serialization;
+using AxiomOps.Services.Http;
+
 namespace AxiomOps.Services.Models;
 
 /// <summary>Basic installed-game record as stored in the database.</summary>
@@ -15,7 +18,14 @@ public class GameRecord
     public int? GameProviderId { get; set; }
     public string? GameProvider { get; set; }
     public bool FreeGameSupport { get; set; }
+
+    // Some catalogs (confirmed: FreeGames/FreeGamesOptions) send these unset for
+    // certain games instead of a real true/false — a strict bool would crash the
+    // whole response's deserialization over one purely-informational flag.
+    [JsonConverter(typeof(LenientBooleanConverter))]
     public bool Clone { get; set; }
+
+    [JsonConverter(typeof(LenientBooleanConverter))]
     public bool Rtp { get; set; }
     public int? ClientTypeId { get; set; }
     public string? GamePath { get; set; }

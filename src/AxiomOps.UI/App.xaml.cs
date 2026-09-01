@@ -39,6 +39,7 @@ public partial class App : Application
         builder.Services.AddTransient<DeployGameViewModel>();
         builder.Services.AddSingleton<TestDataCatalogService>();
         builder.Services.AddTransient<PlayRepositoryViewModel>();
+        builder.Services.AddTransient<FreeGamesViewModel>();
         builder.Services.AddSingleton<MainWindowViewModel>();
         builder.Services.AddSingleton<MainWindow>();
 

@@ -47,6 +47,9 @@
                 <Button Content="🎲 Bet settings masivos" Padding="12,6" Margin="0,0,8,0"
                         FontWeight="SemiBold"
                         Command="{Binding OpenBetSettingsToolCommand}" />
+                <Button Content="🎁 Free Games" Padding="12,6" Margin="0,0,8,0"
+                        FontWeight="SemiBold"
+                        Command="{Binding OpenFreeGamesToolCommand}" />
                 <Button Content="⟳ Actualizar" Padding="12,6" Margin="0,0,8,0"
                         Command="{Binding RefreshCommand}" />
                 <Button Content="🔌 Cambiar ambiente" Padding="12,6"

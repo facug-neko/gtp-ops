@@ -1,0 +1,227 @@
+<UserControl x:Class="AxiomOps.UI.Views.FreeGamesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,14" LastChildFill="False">
+            <StackPanel DockPanel.Dock="Left">
+                <TextBlock FontSize="24" FontWeight="SemiBold">
+                    <Run Text="Free Games —" /> <Run Text="{Binding EnvironmentName, Mode=OneWay}" />
+                </TextBlock>
+                <TextBlock Foreground="#757575" Margin="0,4,0,0"
+                           Text="Cargá una oferta de free games para un usuario del ambiente." />
+            </StackPanel>
+            <Button DockPanel.Dock="Right" Content="← Volver al dashboard" Padding="12,6" VerticalAlignment="Top"
+                    Command="{Binding BackCommand}" />
+        </DockPanel>
+
+        <ProgressBar Grid.Row="1" Height="4" IsIndeterminate="True" BorderThickness="0" Margin="0,0,0,10"
+                     Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+
+        <!-- Left: game/player + offer details. Right: bet model, action, result log
+             (the same real estate the multi-game grid used to occupy). -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+
+                    <!-- Game -->
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Juego (buscar y elegir)" />
+                    <TextBox Padding="6,5" Margin="0,0,0,6"
+                             Text="{Binding GameFilter, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Escribí parte del nombre del juego para filtrar" />
+                    <ComboBox ItemsSource="{Binding Games}" SelectedItem="{Binding SelectedGame}" Padding="6,5">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding DisplayName, Mode=OneWay}" />
+                                    <Run Foreground="#757575">
+                                        <Run.Text>
+                                            <MultiBinding StringFormat="  (MID: {0} • CID: {1})" Mode="OneWay">
+                                                <Binding Path="ModuleId" Mode="OneWay" />
+                                                <Binding Path="ClientId" Mode="OneWay" />
+                                            </MultiBinding>
+                                        </Run.Text>
+                                    </Run>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <!-- Player -->
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Jugador (buscar y elegir)" Margin="0,14,0,4" />
+                    <TextBox Padding="6,5" Margin="0,0,0,6"
+                             Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Escribí parte del loginName para filtrar" />
+                    <ComboBox ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}" Padding="6,5">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding LoginName, Mode=OneWay}" />
+                                    <Run Foreground="#757575">
+                                        <Run.Text>
+                                            <MultiBinding StringFormat="  (Product Id: {0} • Balance: {1})" Mode="OneWay">
+                                                <Binding Path="ProductId" Mode="OneWay" />
+                                                <Binding Path="Balance" Mode="OneWay" />
+                                            </MultiBinding>
+                                        </Run.Text>
+                                    </Run>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <!-- Offer Details -->
+                    <TextBlock Text="🎯 Offer Details" FontWeight="SemiBold" FontSize="15" Margin="0,20,0,10" />
+
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Offer Name (optional)" />
+                    <TextBox Padding="6,5" MaxLength="255"
+                             Text="{Binding OfferName, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Si se deja vacío, el server genera un nombre único." />
+
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Default Display Line 1 (optional)" />
+                            <TextBox Padding="6,5" MaxLength="50"
+                                     Text="{Binding DisplayLine1, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Default Display Line 2 (optional)" />
+                            <TextBox Padding="6,5" MaxLength="50"
+                                     Text="{Binding DisplayLine2, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Default Number of Games *" />
+                            <TextBox Padding="6,5" Text="{Binding DefaultNumberOfGames, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Balance Type *" />
+                            <ComboBox ItemsSource="{Binding BalanceTypes}" SelectedItem="{Binding SelectedBalanceType}" Padding="6,5" />
+                        </StackPanel>
+                    </Grid>
+
+                    <CheckBox Content="Custom Offer Available From Start Date" IsChecked="{Binding HasCustomAvailableFrom}"
+                              Margin="0,16,0,0" />
+                    <TextBlock Foreground="#757575" FontSize="12" Margin="0,4,0,0" TextWrapping="Wrap"
+                               Text="Please note that all times are displayed in UTC and consumed in UTC." />
+
+                    <Grid Margin="0,8,0,0"
+                          Visibility="{Binding HasCustomAvailableFrom, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Offer Available From Date (UTC)" />
+                            <DatePicker SelectedDate="{Binding AvailableFromDate}" Padding="4" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Offer Available From Time (UTC, HH:mm)" />
+                            <TextBox Padding="6,5" Text="{Binding AvailableFromTime, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Offer Expiration Date (UTC) *" />
+                            <DatePicker SelectedDate="{Binding ExpirationDate}" Padding="4" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Offer Expiration Time (UTC, HH:mm) *" />
+                            <TextBox Padding="6,5" Text="{Binding ExpirationTime, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Duration After Awarded *" />
+                            <ComboBox ItemsSource="{Binding DurationTypes}" SelectedItem="{Binding SelectedDurationType}"
+                                      DisplayMemberPath="Description" Padding="6,5" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Style="{StaticResource CardTitle}" Text="Time Period *" />
+                            <TextBox Padding="6,5" Text="{Binding DurationLength, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Grid>
+
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+
+        <!-- Right: bet model + action + result log -->
+        <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="🎰 Bet Model" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,10" />
+
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Available Chip Sizes *" />
+                    <ComboBox ItemsSource="{Binding ChipSizeOptions}" SelectedItem="{Binding SelectedChipSize}" Padding="6,5" />
+
+                    <TextBlock Style="{StaticResource CardTitle}" Text="Available Number of Coins *" Margin="0,10,0,4" />
+                    <ComboBox ItemsSource="{Binding CoinOptions}" SelectedItem="{Binding SelectedCoinOption}" Padding="6,5" />
+
+                    <!-- Submit -->
+                    <Button Content="✚ Create Offer" Padding="18,9" FontWeight="SemiBold" Margin="0,20,0,0"
+                            Background="#2E7D32" Foreground="White" HorizontalAlignment="Stretch"
+                            Command="{Binding SubmitCommand}" />
+
+                    <TextBlock Margin="0,12,0,0" Foreground="#2E7D32" TextWrapping="Wrap"
+                               Text="{Binding StatusMessage}"
+                               Visibility="{Binding StatusMessage, Converter={StaticResource NullOrEmptyToVisibility}}" />
+                    <TextBlock Style="{StaticResource ErrorText}" Margin="0,6,0,0"
+                               Text="{Binding ErrorMessage}"
+                               Visibility="{Binding ErrorMessage, Converter={StaticResource NullOrEmptyToVisibility}}" />
+
+                    <!-- Result log (mirrors the web form's timestamped result panel) -->
+                    <Border Background="#F5F5F5" CornerRadius="4" Padding="10" Margin="0,12,0,0"
+                            Visibility="{Binding HasLog, Converter={StaticResource BoolToVisibility}}">
+                        <ItemsControl ItemsSource="{Binding Log}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="11" TextWrapping="Wrap" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

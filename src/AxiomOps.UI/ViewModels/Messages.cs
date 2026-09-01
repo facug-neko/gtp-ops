@@ -39,5 +39,8 @@ public sealed record OpenDeployGameMessage;
 /// <summary>Sent by the dashboard to open the play-repository generator.</summary>
 public sealed record OpenPlayRepositoryToolMessage;
 
+/// <summary>Sent by the dashboard to open the Free Games offer form.</summary>
+public sealed record OpenFreeGamesToolMessage;
+
 /// <summary>Sent by a tool view to go back to the dashboard.</summary>
 public sealed record BackToDashboardMessage;

@@ -47,6 +47,9 @@
         <DataTemplate DataType="{x:Type vm:PlayRepositoryViewModel}">
             <views:PlayRepositoryView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:FreeGamesViewModel}">
+            <views:FreeGamesView />
+        </DataTemplate>
     </Window.Resources>
 
     <ContentControl Content="{Binding CurrentViewModel}" />

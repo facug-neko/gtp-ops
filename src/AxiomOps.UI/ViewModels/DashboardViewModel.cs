@@ -745,4 +745,7 @@ public partial class DashboardViewModel : ObservableObject
 
     [RelayCommand]
     private void OpenPlayRepositoryTool() => _messenger.Send(new OpenPlayRepositoryToolMessage());
+
+    [RelayCommand]
+    private void OpenFreeGamesTool() => _messenger.Send(new OpenFreeGamesToolMessage());
 }
