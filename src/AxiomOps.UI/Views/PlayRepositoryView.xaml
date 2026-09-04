@@ -45,6 +45,9 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
+                    <TextBlock Text="Versión:" VerticalAlignment="Center" Margin="14,0,8,0" />
+                    <ComboBox Width="100" ItemsSource="{Binding GameVersions}" SelectedItem="{Binding SelectedGameVersion}"
+                              VerticalContentAlignment="Center" ToolTip="Versión del cliente del juego a usar en los links generados" />
                     <TextBlock Text="Mercado:" VerticalAlignment="Center" Margin="20,0,8,0" />
                     <ComboBox Width="150" ItemsSource="{Binding Lobbies}" SelectedItem="{Binding SelectedLobby}"
                               DisplayMemberPath="FriendlyName" VerticalContentAlignment="Center" />

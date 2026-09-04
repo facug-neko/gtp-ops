@@ -96,10 +96,15 @@ public partial class PlayRepositoryViewModel : ObservableObject
     public ObservableCollection<PlayRepositoryRow> Rows { get; } = [];
     public ObservableCollection<Lobby> Lobbies { get; } = [];
     public ObservableCollection<InstalledGameRecord> Games { get; } = [];
+    public ObservableCollection<string> GameVersions { get; } = [];
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(GenerateCommand))]
     private InstalledGameRecord? _selectedGame;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(GenerateCommand))]
+    private string? _selectedGameVersion;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(GenerateCommand))]
@@ -150,6 +155,19 @@ public partial class PlayRepositoryViewModel : ObservableObject
 
     partial void OnShowOnlyReadyChanged(bool value) => ApplyFilter();
 
+    partial void OnSelectedGameChanged(InstalledGameRecord? value)
+    {
+        GameVersions.Clear();
+        foreach (var version in VersionOrdering.Descending((value?.Versions ?? []).Select(v => v.Version)))
+        {
+            GameVersions.Add(version);
+        }
+
+        // Newest-first, so the freshest build is preselected — same default as Launch,
+        // but the user can now override it here.
+        SelectedGameVersion = GameVersions.FirstOrDefault();
+    }
+
     [RelayCommand]
     private async Task InitializeAsync()
     {
@@ -187,13 +205,15 @@ public partial class PlayRepositoryViewModel : ObservableObject
         }
     }
 
-    private bool CanGenerate() => !IsBusy && SelectedGame is not null && SelectedLobby is not null;
+    private bool CanGenerate() =>
+        !IsBusy && SelectedGame is not null && SelectedLobby is not null && !string.IsNullOrEmpty(SelectedGameVersion);
 
     [RelayCommand(CanExecute = nameof(CanGenerate))]
     private async Task GenerateAsync()
     {
         var game = SelectedGame!;
         var lobby = SelectedLobby!;
+        var gameVersion = SelectedGameVersion!;
         var moduleId = game.ModuleId;
         var clientId = game.ClientId;
         var moduleIdText = moduleId.ToString(CultureInfo.InvariantCulture);
@@ -265,7 +285,6 @@ public partial class PlayRepositoryViewModel : ObservableObject
                 .ToDictionary(g => g.Key, g => g.First(), StringComparer.OrdinalIgnoreCase);
 
             var latestTitan = VersionOrdering.Latest((titanTask.Result.DataObject ?? []).Select(t => t.AppVersion));
-            var gameVersion = VersionOrdering.Latest((game.Versions ?? []).Select(v => v.Version));
 
             // Build the row scaffold: resolve identity + user, but not the URL yet.
             var scaffold = new List<(PlayRepositoryRow Row, UserAccount? User)>();
